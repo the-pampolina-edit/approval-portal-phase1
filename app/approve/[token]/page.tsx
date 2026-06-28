@@ -120,19 +120,17 @@ export default function ApprovePage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-lg opacity-60">Loading...</p>
-        </div>
+        <p style={{ color: 'var(--color-muted-text)' }}>Loading...</p>
       </div>
     );
   }
 
   if (error || !content) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="max-w-sm text-center space-y-4">
-          <h1 className="text-2xl font-semibold">Oops</h1>
-          <p className="opacity-70">{error || 'Something went wrong.'}</p>
+      <div className="min-h-screen flex items-center justify-center px-6 md:px-10">
+        <div style={{ maxWidth: '500px', textAlign: 'center' }} className="space-y-4">
+          <h1 style={{ fontSize: '24px', fontWeight: 700 }}>Oops</h1>
+          <p style={{ color: 'var(--color-muted-text)' }}>{error || 'Something went wrong.'}</p>
         </div>
       </div>
     );
@@ -143,30 +141,42 @@ export default function ApprovePage() {
   }
 
   const allActioned = Object.values(approvals).every(a => a.status !== 'pending');
+  const reviewed = Object.values(approvals).filter(a => a.status !== 'pending').length;
+  const total = Object.values(approvals).length;
 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="border-b border-black/10 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto">
-          <div className="space-y-3">
-            <h1 className="text-sm font-medium tracking-wide opacity-60">Pampolina Edit</h1>
+      <header style={{ borderBottomWidth: '1px', borderBottomColor: 'var(--color-border)' }} className="px-6 md:px-10 py-8">
+        <div className="container-max">
+          <div className="flex justify-between items-start gap-6">
             <div>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+              <h1 style={{ fontSize: '14px', fontWeight: 500, letterSpacing: '0.05em', color: '#2563EB', marginBottom: '16px' }}>
+                PAMPOLINA EDIT
+              </h1>
+              <h2 style={{ fontSize: '32px', fontWeight: 700 }}>
                 {content.client.name}
               </h2>
-              <p className="mt-2 text-lg opacity-70">
-                {formatMonth(content.month, content.year)}
-              </p>
+            </div>
+            <div style={{ textAlign: 'right', color: 'var(--color-muted-text)' }}>
+              <p style={{ fontSize: '14px' }}>{formatMonth(content.month, content.year)}</p>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Content Grid */}
-      <main className="flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+      {/* Main Content */}
+      <main className="flex-1 px-6 md:px-10 py-12 md:py-16">
+        <div className="container-max">
+          {/* Section Label */}
+          <div style={{ marginBottom: '48px' }}>
+            <p style={{ fontSize: '12px', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-onyx)' }}>
+              {formatMonth(content.month, content.year)} Content Calendar — {content.client.name}
+            </p>
+          </div>
+
+          {/* Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
             {content.posts.map((post) => (
               <PostCard
                 key={post.id}
@@ -178,31 +188,33 @@ export default function ApprovePage() {
               />
             ))}
           </div>
-        </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="border-t border-black/10 px-4 py-8 sm:px-6 lg:px-8 bg-black/[0.02]">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col items-center gap-4">
+          {/* Submit Section */}
+          <div style={{ textAlign: 'center', paddingTop: '24px', borderTopWidth: '1px', borderTopColor: 'var(--color-border)' }}>
             <button
               onClick={handleSubmit}
               disabled={!allActioned || submitting}
-              className={`px-6 py-3 font-medium rounded-lg transition ${
-                allActioned && !submitting
-                  ? 'bg-[var(--color-cobalt)] text-white hover:opacity-90 cursor-pointer'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
+              style={{
+                backgroundColor: allActioned && !submitting ? 'var(--color-cobalt)' : '#D3D3D3',
+                color: 'white',
+                fontSize: '16px',
+                fontWeight: 500,
+                padding: '16px 48px',
+                borderRadius: '6px',
+                cursor: allActioned && !submitting ? 'pointer' : 'not-allowed',
+                opacity: allActioned && !submitting ? 1 : 0.4,
+                transition: 'all 0.2s ease',
+                boxShadow: allActioned && !submitting ? `0 0 20px rgba(196, 255, 0, 0.3)` : 'none',
+              }}
             >
               {submitting ? 'Submitting...' : 'Submit Your Approval →'}
             </button>
-            <p className="text-sm opacity-60">
-              {Object.values(approvals).filter(a => a.status !== 'pending').length} of{' '}
-              {Object.values(approvals).length} reviewed
+            <p style={{ fontSize: '12px', color: 'var(--color-muted-text)', marginTop: '16px' }}>
+              {reviewed} of {total} reviewed
             </p>
           </div>
         </div>
-      </footer>
+      </main>
     </div>
   );
 }
@@ -220,97 +232,149 @@ function PostCard({
   onRequestEdit: () => void;
   onEditNoteChange: (note: string) => void;
 }) {
+  const isApproved = approval.status === 'approved';
+
   return (
-    <article className="space-y-4 p-6 border border-black/10 rounded-lg">
+    <article
+      style={{
+        backgroundColor: '#FFFFFF',
+        borderWidth: '2px',
+        borderColor: isApproved ? 'var(--color-cobalt)' : 'var(--color-border)',
+        borderLeftWidth: isApproved ? '4px' : '2px',
+        borderRadius: '16px',
+        padding: '20px',
+        transition: 'all 0.2s ease',
+      }}
+    >
       {/* Asset */}
-      <div className="aspect-square bg-black/5 rounded-lg overflow-hidden">
-        {post.type === 'image' ? (
-          <img
-            src={post.asset_url}
-            alt={post.caption}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-        ) : post.type === 'video' ? (
-          <video
-            src={post.asset_url}
-            className="w-full h-full object-cover"
-            controls
-            preload="metadata"
-          />
-        ) : null}
+      <div style={{ marginBottom: '20px', borderRadius: '16px', overflow: 'hidden' }}>
+        <div
+          style={{
+            aspectRatio: post.type === 'image' ? '1/1' : '16/9',
+            backgroundColor: '#f0f0f0',
+            overflow: 'hidden',
+          }}
+        >
+          {post.type === 'image' ? (
+            <img
+              src={post.asset_url}
+              alt={post.caption}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              loading="lazy"
+            />
+          ) : post.type === 'video' ? (
+            <video
+              src={post.asset_url}
+              controls
+              preload="metadata"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          ) : null}
+        </div>
       </div>
 
       {/* Content */}
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <p className="text-sm font-medium">{post.caption}</p>
-          <p className="text-xs opacity-50">Scheduled {formatDate(post.scheduled_date)}</p>
+      <div style={{ marginBottom: '16px' }}>
+        <p style={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.6, marginBottom: '12px' }}>
+          {post.caption}
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+          <p style={{ fontSize: '12px', color: 'var(--color-cobalt)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            {formatDate(post.scheduled_date)}
+          </p>
+          {post.platform && (
+            <span style={{ fontSize: '12px', color: 'var(--color-cobalt)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              {post.platform}
+            </span>
+          )}
         </div>
-
-        {post.platform && (
-          <div className="text-xs font-medium px-2 py-1 bg-black/10 rounded w-fit">
-            {post.platform}
-          </div>
-        )}
-
-        {/* Approval Buttons */}
-        <div className="flex gap-3 pt-2">
-          <button
-            onClick={onApprove}
-            className={`flex-1 px-3 py-2 rounded font-medium text-sm transition ${
-              approval.status === 'approved'
-                ? 'bg-green-500 text-white'
-                : 'border border-green-500 text-green-600 hover:bg-green-50'
-            }`}
-          >
-            ✓ Approve
-          </button>
-          <button
-            onClick={onRequestEdit}
-            className={`flex-1 px-3 py-2 rounded font-medium text-sm transition ${
-              approval.status === 'edit_requested'
-                ? 'bg-yellow-500 text-white'
-                : 'border border-yellow-500 text-yellow-600 hover:bg-yellow-50'
-            }`}
-          >
-            ✗ Edit
-          </button>
-        </div>
-
-        {/* Edit Note */}
-        {approval.status === 'edit_requested' && (
-          <div>
-            <label className="text-xs opacity-60 block mb-2">Your feedback:</label>
-            <textarea
-              value={approval.edit_note}
-              onChange={(e) => onEditNoteChange(e.target.value)}
-              placeholder="What should we change?"
-              className="w-full px-3 py-2 border border-black/10 rounded text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-cobalt)] resize-none"
-              rows={2}
-            />
-          </div>
-        )}
       </div>
+
+      {/* Buttons */}
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
+        <button
+          onClick={onApprove}
+          style={{
+            flex: 1,
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 500,
+            backgroundColor: isApproved ? 'var(--color-cobalt)' : '#FFFFFF',
+            color: isApproved ? '#FFFFFF' : 'var(--color-cobalt)',
+            border: isApproved ? 'none' : '2px solid var(--color-cobalt)',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            opacity: isApproved ? 0.6 : 1,
+          }}
+        >
+            ✓ Approve
+        </button>
+        <button
+          onClick={onRequestEdit}
+          style={{
+            flex: 1,
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 500,
+            backgroundColor: approval.status === 'edit_requested' ? 'var(--color-onyx)' : '#FFFFFF',
+            color: approval.status === 'edit_requested' ? '#FFFFFF' : 'var(--color-onyx)',
+            border: approval.status === 'edit_requested' ? 'none' : `2px solid var(--color-onyx)`,
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          ✗ Request Edit
+        </button>
+      </div>
+
+      {/* Feedback Box */}
+      {approval.status === 'edit_requested' && (
+        <div style={{ marginTop: '12px' }}>
+          <textarea
+            value={approval.edit_note}
+            onChange={(e) => onEditNoteChange(e.target.value)}
+            placeholder="Your feedback..."
+            style={{
+              width: '100%',
+              padding: '12px',
+              borderWidth: '4px',
+              borderColor: 'var(--color-cobalt)',
+              borderRadius: '6px',
+              fontSize: '14px',
+              fontFamily: 'inherit',
+              lineHeight: 1.6,
+              resize: 'none',
+              outline: 'none',
+              transition: 'border-color 0.2s ease',
+            }}
+            rows={3}
+          />
+        </div>
+      )}
     </article>
   );
 }
 
 function ConfirmationPage({ clientName }: { clientName: string }) {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="max-w-sm text-center space-y-6">
-        <div className="space-y-2">
-          <div className="text-5xl font-bold text-[var(--color-lemon)] mb-4">✓</div>
-          <h1 className="text-2xl font-semibold">You're all set</h1>
-          <p className="text-lg opacity-70">
+    <div className="min-h-screen flex items-center justify-center px-6 md:px-10">
+      <div style={{ maxWidth: '500px', textAlign: 'center' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <div style={{ fontSize: '64px', fontWeight: 700, color: 'var(--color-cobalt)', marginBottom: '24px' }}>
+            ✓
+          </div>
+          <h1 style={{ fontSize: '32px', fontWeight: 700, marginBottom: '16px' }}>
+            You're all set.
+          </h1>
+          <p style={{ fontSize: '16px', color: 'var(--color-muted-text)', lineHeight: 1.6 }}>
             Your feedback has been sent to Pampolina Edit. We'll get started on the next steps right away.
           </p>
         </div>
-
-        <div className="pt-6 text-sm opacity-60">
-          <p>Thank you, {clientName}.</p>
-        </div>
+        <p style={{ fontSize: '14px', color: 'var(--color-muted-text)' }}>
+          Thank you, {clientName}.
+        </p>
       </div>
     </div>
   );

@@ -2,21 +2,16 @@
 
 :root {
   /* Brand colors */
-  --color-white: #F5F5F0;
+  --color-white: #FFFFFF;
+  --color-bg-white: #F5F5F0;
   --color-onyx: #0A0A0A;
   --color-cobalt: #2563EB;
   --color-lemon: #CCFF00;
+  --color-border: rgba(10, 10, 10, 0.08);
+  --color-muted-text: rgba(10, 10, 10, 0.6);
 
-  /* Semantics */
-  --background: var(--color-white);
-  --foreground: var(--color-onyx);
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Typography */
+  --font-family: var(--font-dm-sans, "DM Sans", sans-serif);
 }
 
 * {
@@ -30,11 +25,11 @@ html, body {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  line-height: 1.6;
+  background: var(--color-bg-white);
+  color: var(--color-onyx);
+  font-family: var(--font-family);
   font-size: 16px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -45,18 +40,48 @@ a {
 }
 
 button {
-  font-family: inherit;
+  font-family: var(--font-family);
   cursor: pointer;
   border: none;
   transition: all 0.2s ease;
 }
 
-button:active {
-  transform: scale(0.98);
+button:disabled {
+  cursor: not-allowed;
 }
 
-img, video {
+img {
+  display: block;
   max-width: 100%;
   height: auto;
+}
+
+video {
   display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+textarea {
+  font-family: var(--font-family);
+}
+
+/* Utility classes */
+.container-max {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .px-desktop-40 {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (min-width: 769px) {
+  .px-desktop-40 {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
 }
