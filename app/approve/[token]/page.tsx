@@ -85,28 +85,35 @@ export default function ApprovePage() {
         throw new Error('Zapier webhook URL not configured');
       }
 
+      // Get month name
+      const monthDate = new Date(content.year, content.month - 1);
+      const monthName = monthDate.toLocaleDateString('en-US', { month: 'long' });
+
       // Build payload
       const payload = {
         client_name: content.client_name,
-        month: formatMonth(content.month, content.year),
+        month: monthName,
+        year: content.year,
         submitted_at: new Date().toISOString(),
         posts: content.posts.map(post => ({
-          asset_filename: post.image_url.split('/').pop() || post.image_url,
+          id: post.id,
           caption: post.caption,
           scheduled_date: post.scheduled_date,
+          platform: post.platform || null,
           status: approvals[post.id].status,
           edit_note: approvals[post.id].edit_note || null,
         })),
       };
 
-      const response = await fetch(webhookUrl, {
+      // POST to Zapier webhook
+      const zapierResponse = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to submit');
+      if (!zapierResponse.ok) {
+        console.warn('Zapier webhook failed, but continuing with Supabase logging');
       }
 
       setSubmitted(true);
