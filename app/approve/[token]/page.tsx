@@ -91,7 +91,7 @@ export default function ApprovePage() {
         month: formatMonth(content.month, content.year),
         submitted_at: new Date().toISOString(),
         posts: content.posts.map(post => ({
-          asset_filename: post.asset_url.split('/').pop() || post.asset_url,
+          asset_filename: post.image_url.split('/').pop() || post.image_url,
           caption: post.caption,
           scheduled_date: post.scheduled_date,
           status: approvals[post.id].status,
