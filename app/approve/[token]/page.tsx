@@ -247,30 +247,22 @@ function PostCard({
       }}
     >
       {/* Asset */}
-      <div style={{ marginBottom: '20px', borderRadius: '16px', overflow: 'hidden' }}>
-        <div
-          style={{
-            aspectRatio: post.type === 'image' ? '1/1' : '16/9',
-            backgroundColor: '#f0f0f0',
-            overflow: 'hidden',
-          }}
-        >
-          {post.type === 'image' ? (
-            <img
-              src={post.image_url}
-              alt={post.caption}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-              loading="lazy"
-            />
-          ) : post.type === 'video' ? (
-            <video
-              src={post.image_url}
-              controls
-              preload="metadata"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          ) : null}
-        </div>
+      <div style={{ marginBottom: '20px', borderRadius: '16px', overflow: 'hidden', backgroundColor: '#f0f0f0' }}>
+        {post.type === 'image' ? (
+          <img
+            src={post.image_url}
+            alt={post.caption}
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+            loading="lazy"
+          />
+        ) : post.type === 'video' ? (
+          <video
+            src={post.image_url}
+            controls
+            preload="metadata"
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+          />
+        ) : null}
       </div>
 
       {/* Content */}
