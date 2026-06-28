@@ -27,10 +27,21 @@ CREATE TABLE posts (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Create submissions table (log of all client submissions)
+CREATE TABLE submissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  batch_id UUID NOT NULL REFERENCES batches(id) ON DELETE CASCADE,
+  payload JSONB NOT NULL,
+  zapier_status TEXT NOT NULL DEFAULT 'pending' CHECK (zapier_status IN ('pending', 'success', 'failed')),
+  zapier_error TEXT,
+  submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create indexes
 CREATE INDEX idx_batches_token ON batches(magic_link_token);
 CREATE INDEX idx_batches_expires_at ON batches(expires_at);
 CREATE INDEX idx_posts_batch_id ON posts(batch_id);
+CREATE INDEX idx_submissions_batch_id ON submissions(batch_id);
 
 -- Enable RLS
 ALTER TABLE batches ENABLE ROW LEVEL SECURITY;
