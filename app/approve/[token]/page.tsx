@@ -137,7 +137,7 @@ export default function ApprovePage() {
   }
 
   if (submitted) {
-    return <ConfirmationPage clientName={content.client.name} />;
+    return <ConfirmationPage clientName={content.client_name} />;
   }
 
   const allActioned = Object.values(approvals).every(a => a.status !== 'pending');
@@ -155,7 +155,7 @@ export default function ApprovePage() {
                 PAMPOLINA EDIT
               </h1>
               <h2 style={{ fontSize: '32px', fontWeight: 700 }}>
-                {content.client.name}
+                {content.client_name}
               </h2>
             </div>
             <div style={{ textAlign: 'right', color: 'var(--color-muted-text)' }}>
@@ -171,7 +171,7 @@ export default function ApprovePage() {
           {/* Section Label */}
           <div style={{ marginBottom: '48px' }}>
             <p style={{ fontSize: '12px', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-onyx)' }}>
-              {formatMonth(content.month, content.year)} Content Calendar — {content.client.name}
+              {formatMonth(content.month, content.year)} Content Calendar — {content.client_name}
             </p>
           </div>
 
@@ -257,14 +257,14 @@ function PostCard({
         >
           {post.type === 'image' ? (
             <img
-              src={post.asset_url}
+              src={post.image_url}
               alt={post.caption}
               style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
               loading="lazy"
             />
           ) : post.type === 'video' ? (
             <video
-              src={post.asset_url}
+              src={post.image_url}
               controls
               preload="metadata"
               style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
