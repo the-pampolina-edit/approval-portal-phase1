@@ -87,7 +87,7 @@ export default function ApprovePage() {
 
       // Build payload
       const payload = {
-        client_name: content.client.name,
+        client_name: content.client_name,
         month: formatMonth(content.month, content.year),
         submitted_at: new Date().toISOString(),
         posts: content.posts.map(post => ({
