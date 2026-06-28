@@ -1,0 +1,60 @@
+{
+  "client": {
+    "name": "Michelle Radakovich",
+    "honeybook_url": "https://honeybook.com/path-to-smart-file-here"
+  },
+  "month": "August",
+  "year": 2026,
+  "token": "august-kind-co",
+  "expires_at": "2026-07-10T23:59:59Z",
+  "posts": [
+    {
+      "id": "post-001",
+      "type": "image",
+      "asset_url": "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1200",
+      "caption": "New collection launch — introducing our sustainable linen line",
+      "scheduled_date": "2026-08-03",
+      "platform": "Instagram"
+    },
+    {
+      "id": "post-002",
+      "type": "image",
+      "asset_url": "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=1200",
+      "caption": "Behind-the-scenes: crafting our premium collection",
+      "scheduled_date": "2026-08-07",
+      "platform": "Instagram"
+    },
+    {
+      "id": "post-003",
+      "type": "image",
+      "asset_url": "https://images.unsplash.com/photo-1513515245349-55e0f3b9efd4?w=1200",
+      "caption": "Customer spotlight: how our pieces fit into your daily life",
+      "scheduled_date": "2026-08-10",
+      "platform": "Facebook"
+    },
+    {
+      "id": "post-004",
+      "type": "video",
+      "asset_url": "https://videos.pexels.com/video-files/3764067/3764067-hd_1080_1920_25fps.mp4",
+      "caption": "Style guide: 5 ways to wear our signature dress",
+      "scheduled_date": "2026-08-15",
+      "platform": "Instagram Reels"
+    },
+    {
+      "id": "post-005",
+      "type": "image",
+      "asset_url": "https://images.unsplash.com/photo-1492707892657-57a337a11ffe?w=1200",
+      "caption": "Summer is ending — 20% off clearance starts August 20",
+      "scheduled_date": "2026-08-18",
+      "platform": "Instagram"
+    },
+    {
+      "id": "post-006",
+      "type": "image",
+      "asset_url": "https://images.unsplash.com/photo-1539533057440-7814a01d4c94?w=1200",
+      "caption": "Your capsule wardrobe starts here — simplify with pieces that last",
+      "scheduled_date": "2026-08-25",
+      "platform": "Facebook"
+    }
+  ]
+}
