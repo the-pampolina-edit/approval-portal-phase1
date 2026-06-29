@@ -119,7 +119,7 @@ export default function AdminPage() {
             onClick={() => setShowNewBatchForm(!showNewBatchForm)}
             style={{
               padding: '12px 24px',
-              backgroundColor: '#2563EB',
+              backgroundColor: '#ecff90',
               color: '#FFFFFF',
               borderRadius: '6px',
               border: 'none',
@@ -177,7 +177,7 @@ export default function AdminPage() {
                   style={{
                     flex: 1,
                     padding: '12px',
-                    backgroundColor: '#2563EB',
+                    backgroundColor: '#ecff90',
                     color: '#FFFFFF',
                     border: 'none',
                     borderRadius: '6px',
@@ -218,7 +218,7 @@ export default function AdminPage() {
                   onClick={() => setSelectedBatch(batch.id)}
                   style={{
                     padding: '12px',
-                    backgroundColor: selectedBatch === batch.id ? '#2563EB' : '#1a1a1a',
+                    backgroundColor: selectedBatch === batch.id ? '#ecff90' : '#1a1a1a',
                     color: '#FFFFFF',
                     border: '1px solid #333',
                     borderRadius: '6px',
@@ -252,7 +252,7 @@ export default function AdminPage() {
                       width: '100%',
                       padding: '12px',
                       backgroundColor: '#0A0A0A',
-                      color: '#2563EB',
+                      color: '#ecff90',
                       border: '1px solid #333',
                       borderRadius: '6px',
                       fontSize: '12px',
@@ -266,7 +266,7 @@ export default function AdminPage() {
                   style={{
                     width: '100%',
                     padding: '12px',
-                    backgroundColor: '#2563EB',
+                    backgroundColor: '#ecff90',
                     color: '#FFFFFF',
                     border: 'none',
                     borderRadius: '6px',
@@ -293,7 +293,7 @@ export default function AdminPage() {
                   onClick={() => setShowNewPostForm(!showNewPostForm)}
                   style={{
                     padding: '8px 16px',
-                    backgroundColor: '#2563EB',
+                    backgroundColor: '#ecff90',
                     color: '#FFFFFF',
                     borderRadius: '6px',
                     border: 'none',
@@ -352,7 +352,7 @@ export default function AdminPage() {
                         style={{
                           flex: 1,
                           padding: '12px',
-                          backgroundColor: '#2563EB',
+                          backgroundColor: '#ecff90',
                           color: '#FFFFFF',
                           border: 'none',
                           borderRadius: '6px',
