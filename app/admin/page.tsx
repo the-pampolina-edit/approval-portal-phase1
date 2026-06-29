@@ -219,7 +219,7 @@ export default function AdminPage() {
                   style={{
                     padding: '12px',
                     backgroundColor: selectedBatch === batch.id ? '#ecff90' : '#1a1a1a',
-                    color: '#000000',
+                    color: selectedBatch === batch.id ? '#000000' : '#FFFFFF',
                     border: '1px solid #333',
                     borderRadius: '6px',
                     cursor: 'pointer',
