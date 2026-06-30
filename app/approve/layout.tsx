@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Pampolina Edit | Content Approval Portal',
     description: 'Review and approve social media content',
-    image: 'https://approvals.the-pampolina-edit.com/og-image.svg',
+    images: ['https://approvals.the-pampolina-edit.com/og-image.svg'],
     type: 'website',
   },
   twitter: {
