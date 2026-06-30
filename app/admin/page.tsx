@@ -26,6 +26,7 @@ export default function AdminPage() {
     platform: '',
     file: null as File | null,
   });
+  const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
     fetchBatches();
@@ -102,6 +103,7 @@ export default function AdminPage() {
       setPosts([...posts, newPost]);
       setShowNewPostForm(false);
       setPostForm({ caption: '', scheduledDate: '', platform: '', file: null });
+      setPreview(null);
     } catch (err) {
       console.error('Error creating post:', err);
     }
@@ -311,10 +313,23 @@ export default function AdminPage() {
                     <input
                       type="file"
                       accept="image/*,video/*"
-                      onChange={e => setPostForm({ ...postForm, file: e.target.files?.[0] || null })}
+                      onChange={e => {
+                        const file = e.target.files?.[0];
+                        setPostForm({ ...postForm, file: file || null });
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = () => setPreview(reader.result as string);
+                          reader.readAsDataURL(file);
+                        } else {
+                          setPreview(null);
+                        }
+                      }}
                       required
                       style={{ padding: '12px', backgroundColor: '#0A0A0A', color: '#FFFFFF', border: '1px solid #333', borderRadius: '6px', fontSize: '14px' }}
                     />
+                    {preview && (
+                      <img src={preview} alt="Preview" style={{ maxWidth: '200px', maxHeight: '200px', borderRadius: '6px', objectFit: 'cover' }} />
+                    )}
                     <textarea
                       placeholder="Caption"
                       value={postForm.caption}
