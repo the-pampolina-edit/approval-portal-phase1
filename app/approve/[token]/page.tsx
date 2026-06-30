@@ -295,11 +295,12 @@ function PostCard({
             borderRadius: '8px',
             fontSize: '14px',
             fontWeight: 500,
-            backgroundColor: isApproved ? 'var(--color-cobalt)' : '#FFFFFF',
-            color: isApproved ? '#000000' : 'var(--color-cobalt)',
-            border: isApproved ? 'none' : '2px solid var(--color-cobalt)',
+            backgroundColor: 'var(--color-cobalt)',
+            color: '#000000',
+            border: 'none',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
+            opacity: isApproved ? 0.6 : 1,
           }}
         >
             ✓ Approve
