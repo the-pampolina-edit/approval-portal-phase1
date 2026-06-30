@@ -405,7 +405,7 @@ export default function AdminPage() {
                       <div>
                         <p style={{ fontSize: '14px', marginBottom: '8px' }}>{post.caption}</p>
                         <p style={{ fontSize: '12px', opacity: 0.6 }}>
-                          {new Date(post.scheduled_date).toLocaleDateString()} {post.platform && `• ${post.platform}`}
+                          {(() => { const [y, m, d] = post.scheduled_date.split('-'); return new Date(parseInt(y), parseInt(m) - 1, parseInt(d)).toLocaleDateString(); })()} {post.platform && `• ${post.platform}`}
                         </p>
                       </div>
                     </div>
