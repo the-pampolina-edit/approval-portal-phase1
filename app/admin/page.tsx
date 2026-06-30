@@ -27,6 +27,12 @@ export default function AdminPage() {
     file: null as File | null,
   });
   const [preview, setPreview] = useState<string | null>(null);
+  const [editingPostId, setEditingPostId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({
+    caption: '',
+    scheduledDate: '',
+    platform: '',
+  });
 
   useEffect(() => {
     fetchBatches();
@@ -106,6 +112,30 @@ export default function AdminPage() {
       setPreview(null);
     } catch (err) {
       console.error('Error creating post:', err);
+    }
+  }
+
+  async function handleEditPost(e: React.FormEvent, postId: string) {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/admin/posts', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          postId,
+          caption: editForm.caption,
+          scheduledDate: editForm.scheduledDate,
+          platform: editForm.platform || null,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to update post');
+      const updatedPost = await response.json();
+      setPosts(posts.map(p => p.id === postId ? updatedPost : p));
+      setEditingPostId(null);
+      setEditForm({ caption: '', scheduledDate: '', platform: '' });
+    } catch (err) {
+      console.error('Error updating post:', err);
     }
   }
 
@@ -399,16 +429,110 @@ export default function AdminPage() {
 
               <div style={{ display: 'grid', gap: '12px' }}>
                 {posts.map(post => (
-                  <div key={post.id} style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '6px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '16px', alignItems: 'start' }}>
-                      <img src={post.image_url} alt={post.caption} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px' }} />
-                      <div>
-                        <p style={{ fontSize: '14px', marginBottom: '8px' }}>{post.caption}</p>
-                        <p style={{ fontSize: '12px', opacity: 0.6 }}>
-                          {(() => { const [y, m, d] = post.scheduled_date.split('-'); return new Date(parseInt(y), parseInt(m) - 1, parseInt(d)).toLocaleDateString(); })()} {post.platform && `• ${post.platform}`}
-                        </p>
+                  <div key={post.id}>
+                    {editingPostId === post.id ? (
+                      <div style={{ backgroundColor: '#1a1a1a', padding: '24px', borderRadius: '8px' }}>
+                        <form onSubmit={(e) => handleEditPost(e, post.id)} style={{ display: 'grid', gap: '16px' }}>
+                          <textarea
+                            placeholder="Caption"
+                            value={editForm.caption}
+                            onChange={e => setEditForm({ ...editForm, caption: e.target.value })}
+                            required
+                            style={{
+                              padding: '12px',
+                              backgroundColor: '#FFFFFF',
+                              color: '#000000',
+                              border: '1px solid #333',
+                              borderRadius: '6px',
+                              fontSize: '14px',
+                              fontFamily: 'inherit',
+                              minHeight: '80px',
+                              resize: 'none',
+                            }}
+                          />
+                          <input
+                            type="date"
+                            value={editForm.scheduledDate}
+                            onChange={e => setEditForm({ ...editForm, scheduledDate: e.target.value })}
+                            required
+                            style={{ padding: '12px', backgroundColor: '#0A0A0A', color: '#FFFFFF', border: '1px solid #333', borderRadius: '6px', fontSize: '14px' }}
+                          />
+                          <input
+                            type="text"
+                            placeholder="Platform (e.g., Instagram, Facebook)"
+                            value={editForm.platform}
+                            onChange={e => setEditForm({ ...editForm, platform: e.target.value })}
+                            style={{ padding: '12px', backgroundColor: '#0A0A0A', color: '#FFFFFF', border: '1px solid #333', borderRadius: '6px', fontSize: '14px' }}
+                          />
+                          <div style={{ display: 'flex', gap: '12px' }}>
+                            <button
+                              type="submit"
+                              style={{
+                                flex: 1,
+                                padding: '12px',
+                                backgroundColor: '#ecff90',
+                                color: '#000000',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontWeight: 500,
+                              }}
+                            >
+                              Save Changes
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditingPostId(null)}
+                              style={{
+                                flex: 1,
+                                padding: '12px',
+                                backgroundColor: '#333',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
                       </div>
-                    </div>
+                    ) : (
+                      <div style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '6px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '16px', alignItems: 'start' }}>
+                          <img src={post.image_url} alt={post.caption} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px' }} />
+                          <div>
+                            <p style={{ fontSize: '14px', marginBottom: '8px' }}>{post.caption}</p>
+                            <p style={{ fontSize: '12px', opacity: 0.6, marginBottom: '12px' }}>
+                              {(() => { const [y, m, d] = post.scheduled_date.split('-'); return new Date(parseInt(y), parseInt(m) - 1, parseInt(d)).toLocaleDateString(); })()} {post.platform && `• ${post.platform}`}
+                            </p>
+                            <button
+                              onClick={() => {
+                                setEditingPostId(post.id);
+                                setEditForm({
+                                  caption: post.caption,
+                                  scheduledDate: post.scheduled_date,
+                                  platform: post.platform || '',
+                                });
+                              }}
+                              style={{
+                                padding: '8px 16px',
+                                backgroundColor: '#ecff90',
+                                color: '#000000',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontSize: '12px',
+                                fontWeight: 500,
+                              }}
+                            >
+                              Edit
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

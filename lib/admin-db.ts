@@ -84,6 +84,28 @@ export async function createPost(
   return data as Post;
 }
 
+export async function updatePost(
+  id: string,
+  caption?: string,
+  scheduledDate?: string,
+  platform?: string | null
+) {
+  const updates: Record<string, any> = {};
+  if (caption !== undefined) updates.caption = caption;
+  if (scheduledDate !== undefined) updates.scheduled_date = scheduledDate;
+  if (platform !== undefined) updates.platform = platform;
+
+  const { data, error } = await supabaseAdmin
+    .from('posts')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Post;
+}
+
 export async function deletePost(id: string) {
   const { error } = await supabaseAdmin
     .from('posts')

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createPost, getPostsByBatch } from '@/lib/admin-db';
+import { createPost, getPostsByBatch, updatePost } from '@/lib/admin-db';
 import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
@@ -64,5 +64,22 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating post:', error);
     return NextResponse.json({ error: 'Failed to create post' }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { postId, caption, scheduledDate, platform } = body;
+
+    if (!postId) {
+      return NextResponse.json({ error: 'postId required' }, { status: 400 });
+    }
+
+    const post = await updatePost(postId, caption, scheduledDate, platform);
+    return NextResponse.json(post);
+  } catch (error) {
+    console.error('Error updating post:', error);
+    return NextResponse.json({ error: 'Failed to update post' }, { status: 500 });
   }
 }
