@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { Batch, Post } from '@/lib/supabase';
 import { generateMagicLinkUrl } from '@/lib/admin-auth';
+import { formatDateTime } from '@/lib/content';
 
 export default function AdminPage() {
   const [batches, setBatches] = useState<(Batch & { post_count: number })[]>([]);
@@ -23,6 +24,7 @@ export default function AdminPage() {
   const [postForm, setPostForm] = useState({
     caption: '',
     scheduledDate: '',
+    scheduledTime: '',
     platform: '',
     file: null as File | null,
   });
@@ -31,6 +33,7 @@ export default function AdminPage() {
   const [editForm, setEditForm] = useState({
     caption: '',
     scheduledDate: '',
+    scheduledTime: '',
     platform: '',
   });
 
@@ -95,7 +98,10 @@ export default function AdminPage() {
       const formData = new FormData();
       formData.append('batchId', selectedBatch);
       formData.append('caption', postForm.caption);
-      formData.append('scheduledDate', postForm.scheduledDate);
+      const timestamp = postForm.scheduledTime
+        ? `${postForm.scheduledDate}T${postForm.scheduledTime}:00`
+        : `${postForm.scheduledDate}T00:00:00`;
+      formData.append('scheduledDate', timestamp);
       formData.append('platform', postForm.platform);
       formData.append('file', postForm.file);
 
@@ -108,7 +114,7 @@ export default function AdminPage() {
       const newPost = await response.json();
       setPosts([...posts, newPost]);
       setShowNewPostForm(false);
-      setPostForm({ caption: '', scheduledDate: '', platform: '', file: null });
+      setPostForm({ caption: '', scheduledDate: '', scheduledTime: '', platform: '', file: null });
       setPreview(null);
     } catch (err) {
       console.error('Error creating post:', err);
@@ -118,13 +124,17 @@ export default function AdminPage() {
   async function handleEditPost(e: React.FormEvent, postId: string) {
     e.preventDefault();
     try {
+      const timestamp = editForm.scheduledTime
+        ? `${editForm.scheduledDate}T${editForm.scheduledTime}:00`
+        : `${editForm.scheduledDate}T00:00:00`;
+
       const response = await fetch('/api/admin/posts', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           postId,
           caption: editForm.caption,
-          scheduledDate: editForm.scheduledDate,
+          scheduledDate: timestamp,
           platform: editForm.platform || null,
         }),
       });
@@ -133,7 +143,7 @@ export default function AdminPage() {
       const updatedPost = await response.json();
       setPosts(posts.map(p => p.id === postId ? updatedPost : p));
       setEditingPostId(null);
-      setEditForm({ caption: '', scheduledDate: '', platform: '' });
+      setEditForm({ caption: '', scheduledDate: '', scheduledTime: '', platform: '' });
     } catch (err) {
       console.error('Error updating post:', err);
     }
@@ -377,13 +387,22 @@ export default function AdminPage() {
                         resize: 'none',
                       }}
                     />
-                    <input
-                      type="date"
-                      value={postForm.scheduledDate}
-                      onChange={e => setPostForm({ ...postForm, scheduledDate: e.target.value })}
-                      required
-                      style={{ padding: '12px', backgroundColor: '#0A0A0A', color: '#FFFFFF', border: '1px solid #333', borderRadius: '6px', fontSize: '14px' }}
-                    />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                      <input
+                        type="date"
+                        value={postForm.scheduledDate}
+                        onChange={e => setPostForm({ ...postForm, scheduledDate: e.target.value })}
+                        required
+                        style={{ padding: '12px', backgroundColor: '#0A0A0A', color: '#FFFFFF', border: '1px solid #333', borderRadius: '6px', fontSize: '14px' }}
+                      />
+                      <input
+                        type="time"
+                        value={postForm.scheduledTime}
+                        onChange={e => setPostForm({ ...postForm, scheduledTime: e.target.value })}
+                        style={{ padding: '12px', backgroundColor: '#0A0A0A', color: '#FFFFFF', border: '1px solid #333', borderRadius: '6px', fontSize: '14px' }}
+                        placeholder="Time (optional)"
+                      />
+                    </div>
                     <input
                       type="text"
                       placeholder="Platform (e.g., Instagram, Facebook)"
@@ -450,13 +469,22 @@ export default function AdminPage() {
                               resize: 'none',
                             }}
                           />
-                          <input
-                            type="date"
-                            value={editForm.scheduledDate}
-                            onChange={e => setEditForm({ ...editForm, scheduledDate: e.target.value })}
-                            required
-                            style={{ padding: '12px', backgroundColor: '#0A0A0A', color: '#FFFFFF', border: '1px solid #333', borderRadius: '6px', fontSize: '14px' }}
-                          />
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                            <input
+                              type="date"
+                              value={editForm.scheduledDate}
+                              onChange={e => setEditForm({ ...editForm, scheduledDate: e.target.value })}
+                              required
+                              style={{ padding: '12px', backgroundColor: '#0A0A0A', color: '#FFFFFF', border: '1px solid #333', borderRadius: '6px', fontSize: '14px' }}
+                            />
+                            <input
+                              type="time"
+                              value={editForm.scheduledTime}
+                              onChange={e => setEditForm({ ...editForm, scheduledTime: e.target.value })}
+                              style={{ padding: '12px', backgroundColor: '#0A0A0A', color: '#FFFFFF', border: '1px solid #333', borderRadius: '6px', fontSize: '14px' }}
+                              placeholder="Time (optional)"
+                            />
+                          </div>
                           <input
                             type="text"
                             placeholder="Platform (e.g., Instagram, Facebook)"
@@ -505,14 +533,18 @@ export default function AdminPage() {
                           <div>
                             <p style={{ fontSize: '14px', marginBottom: '8px' }}>{post.caption}</p>
                             <p style={{ fontSize: '12px', opacity: 0.6, marginBottom: '12px' }}>
-                              {(() => { const [y, m, d] = post.scheduled_date.split('-'); return new Date(parseInt(y), parseInt(m) - 1, parseInt(d)).toLocaleDateString(); })()} {post.platform && `• ${post.platform}`}
+                              {formatDateTime(post.scheduled_date)} {post.platform && `• ${post.platform}`}
                             </p>
                             <button
                               onClick={() => {
+                                const dateTimeParts = post.scheduled_date.split('T');
+                                const date = dateTimeParts[0];
+                                const time = dateTimeParts[1]?.substring(0, 5) || '';
                                 setEditingPostId(post.id);
                                 setEditForm({
                                   caption: post.caption,
-                                  scheduledDate: post.scheduled_date,
+                                  scheduledDate: date,
+                                  scheduledTime: time,
                                   platform: post.platform || '',
                                 });
                               }}

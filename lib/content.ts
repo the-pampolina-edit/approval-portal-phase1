@@ -75,13 +75,31 @@ export function isTokenExpired(expiresAt: string): boolean {
 }
 
 export function formatDate(dateString: string): string {
-  const [year, month, day] = dateString.split('-');
+  const datePart = dateString.split('T')[0];
+  const [year, month, day] = datePart.split('-');
   const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
   return date.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
   });
+}
+
+export function formatDateTime(dateString: string): string {
+  const [datePart, timePart] = dateString.split('T');
+  const [year, month, day] = datePart.split('-');
+  const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  const dateFormatted = date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+  if (timePart && timePart !== '00:00:00') {
+    const [hours, minutes] = timePart.split(':');
+    return `${dateFormatted} at ${parseInt(hours)}:${minutes}`;
+  }
+  return dateFormatted;
 }
 
 export function formatMonth(month: number, year: number): string {

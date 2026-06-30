@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { loadContent, isTokenExpired, formatDate, formatMonth, type ContentBatch, type Post } from '@/lib/content';
+import { loadContent, isTokenExpired, formatDate, formatDateTime, formatMonth, type ContentBatch, type Post } from '@/lib/content';
 
 type PostApproval = {
   id: string;
@@ -275,7 +275,7 @@ function PostCard({
         </p>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
           <p style={{ fontSize: '12px', color: '#000000', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            {formatDate(post.scheduled_date)}
+            {formatDateTime(post.scheduled_date)}
           </p>
           {post.platform && (
             <span style={{ fontSize: '12px', color: '#000000', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
