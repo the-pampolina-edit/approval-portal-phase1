@@ -274,11 +274,11 @@ function PostCard({
           {post.caption}
         </p>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
-          <p style={{ fontSize: '12px', color: 'var(--color-cobalt)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <p style={{ fontSize: '12px', color: '#000000', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {formatDate(post.scheduled_date)}
           </p>
           {post.platform && (
-            <span style={{ fontSize: '12px', color: 'var(--color-cobalt)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: '12px', color: '#000000', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {post.platform}
             </span>
           )}
@@ -296,11 +296,10 @@ function PostCard({
             fontSize: '14px',
             fontWeight: 500,
             backgroundColor: isApproved ? 'var(--color-cobalt)' : '#FFFFFF',
-            color: isApproved ? '#FFFFFF' : 'var(--color-cobalt)',
+            color: isApproved ? '#000000' : 'var(--color-cobalt)',
             border: isApproved ? 'none' : '2px solid var(--color-cobalt)',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
-            opacity: isApproved ? 0.6 : 1,
           }}
         >
             ✓ Approve
