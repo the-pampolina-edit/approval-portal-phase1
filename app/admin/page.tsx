@@ -322,7 +322,7 @@ export default function AdminPage() {
                       required
                       style={{
                         padding: '12px',
-                        backgroundColor: '#0A0A0A',
+                        backgroundColor: '#FFFFFF',
                         color: '#000000',
                         border: '1px solid #333',
                         borderRadius: '6px',
