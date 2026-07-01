@@ -9,6 +9,7 @@ export interface ContentBatch {
   year: number;
   magic_link_token: string;
   expires_at: string;
+  status: 'pending' | 'partially_reviewed' | 'approved' | 'needs_edits';
   posts: Post[];
 }
 
