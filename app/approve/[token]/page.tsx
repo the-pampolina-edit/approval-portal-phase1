@@ -39,6 +39,13 @@ export default function ApprovePage() {
 
       setContent(data);
 
+      // Check if batch is already approved
+      if (data.status !== 'pending' && data.status !== 'partially_reviewed') {
+        setSubmitted(true);
+        setLoading(false);
+        return;
+      }
+
       // Initialize approvals object
       const initialApprovals: Record<string, PostApproval> = {};
       data.posts.forEach(post => {
