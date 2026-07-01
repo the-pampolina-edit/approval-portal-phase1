@@ -16,6 +16,7 @@ export default function AdminPage() {
   // Form states
   const [batchForm, setBatchForm] = useState({
     clientName: '',
+    clientEmail: '',
     honeybook_url: '',
     month: new Date().getMonth() + 1,
     year: new Date().getFullYear(),
@@ -97,7 +98,7 @@ export default function AdminPage() {
       setBatches([newBatch, ...batches]);
       setSelectedBatch(newBatch.id);
       setShowNewBatchForm(false);
-      setBatchForm({ clientName: '', honeybook_url: '', month: new Date().getMonth() + 1, year: new Date().getFullYear() });
+      setBatchForm({ clientName: '', clientEmail: '', honeybook_url: '', month: new Date().getMonth() + 1, year: new Date().getFullYear() });
     } catch (err) {
       console.error('Error creating batch:', err);
     }
@@ -203,6 +204,13 @@ export default function AdminPage() {
                 placeholder="HoneyBook Smart File URL (optional)"
                 value={batchForm.honeybook_url}
                 onChange={e => setBatchForm({ ...batchForm, honeybook_url: e.target.value })}
+                style={{ padding: '12px', backgroundColor: '#0A0A0A', color: '#FFFFFF', border: '1px solid #333', borderRadius: '6px', fontSize: '14px' }}
+              />
+              <input
+                type="email"
+                placeholder="Client Email (for submission confirmation)"
+                value={batchForm.clientEmail}
+                onChange={e => setBatchForm({ ...batchForm, clientEmail: e.target.value })}
                 style={{ padding: '12px', backgroundColor: '#0A0A0A', color: '#FFFFFF', border: '1px solid #333', borderRadius: '6px', fontSize: '14px' }}
               />
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>

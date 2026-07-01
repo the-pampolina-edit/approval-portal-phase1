@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase';
+import { sendSubmissionConfirmation } from '@/lib/email';
 
 export async function POST(req: Request) {
   try {
@@ -54,6 +55,18 @@ export async function POST(req: Request) {
       .from('batches')
       .update({ status: 'approved', submitted_at: new Date().toISOString() })
       .eq('id', batch_id);
+
+    // Fetch batch to get client email and name
+    const { data: batch } = await supabaseAdmin
+      .from('batches')
+      .select('client_name, client_email')
+      .eq('id', batch_id)
+      .single();
+
+    // Send confirmation email if client email exists
+    if (batch?.client_email) {
+      await sendSubmissionConfirmation(batch.client_email, batch.client_name);
+    }
 
     // Always return success to show confirmation screen
     // (Zapier failure doesn't block the client experience)

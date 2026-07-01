@@ -27,6 +27,7 @@ export async function createBatch(
   honeybook_url: string,
   month: number,
   year: number,
+  clientEmail?: string,
   expiryDays: number = 5
 ) {
   const token = generateMagicToken();
@@ -37,6 +38,7 @@ export async function createBatch(
     .from('batches')
     .insert({
       client_name: clientName,
+      client_email: clientEmail || null,
       honeybook_url,
       month,
       year,

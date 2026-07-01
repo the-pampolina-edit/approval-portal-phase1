@@ -16,6 +16,7 @@ export type Batch = {
   month: number;
   year: number;
   client_name: string;
+  client_email: string | null;
   honeybook_url: string;
   magic_link_token: string;
   expires_at: string;

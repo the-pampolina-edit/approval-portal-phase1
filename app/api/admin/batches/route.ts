@@ -14,13 +14,13 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { clientName, honeybook_url, month, year } = await request.json();
+    const { clientName, clientEmail, honeybook_url, month, year } = await request.json();
 
     if (!clientName || !month || !year) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const batch = await createBatch(clientName, honeybook_url || '', month, year);
+    const batch = await createBatch(clientName, honeybook_url || '', month, year, clientEmail || undefined);
     return NextResponse.json(batch);
   } catch (error) {
     console.error('Error creating batch:', error);
