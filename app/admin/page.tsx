@@ -36,6 +36,7 @@ export default function AdminPage() {
     scheduledTime: '',
     platform: '',
   });
+  const [submissions, setSubmissions] = useState<any[]>([]);
 
   useEffect(() => {
     fetchBatches();
@@ -44,6 +45,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (selectedBatch) {
       fetchPosts(selectedBatch);
+      fetchSubmissions(selectedBatch);
     }
   }, [selectedBatch]);
 
@@ -68,6 +70,17 @@ export default function AdminPage() {
       setPosts(data);
     } catch (err) {
       console.error('Error fetching posts:', err);
+    }
+  }
+
+  async function fetchSubmissions(batchId: string) {
+    try {
+      const response = await fetch(`/api/admin/submissions?batchId=${batchId}`);
+      if (!response.ok) throw new Error('Failed to fetch');
+      const data = await response.json();
+      setSubmissions(data);
+    } catch (err) {
+      console.error('Error fetching submissions:', err);
     }
   }
 
@@ -568,6 +581,46 @@ export default function AdminPage() {
                   </div>
                 ))}
               </div>
+
+              {/* Submissions */}
+              {submissions.length > 0 && (
+                <div style={{ marginTop: '48px' }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '16px' }}>Client Feedback</h3>
+                  {submissions.map((submission: any) => (
+                    <div key={submission.id} style={{ backgroundColor: '#1a1a1a', padding: '24px', borderRadius: '8px', marginBottom: '16px' }}>
+                      <p style={{ fontSize: '12px', opacity: 0.6, marginBottom: '16px' }}>
+                        Submitted: {new Date(submission.submitted_at).toLocaleString()}
+                      </p>
+                      <div style={{ display: 'grid', gap: '12px' }}>
+                        {submission.payload.posts.map((post: any) => (
+                          <div key={post.id} style={{ backgroundColor: '#0A0A0A', padding: '16px', borderRadius: '6px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '16px' }}>
+                              <div style={{ flex: 1 }}>
+                                <p style={{ fontSize: '14px', marginBottom: '8px' }}>{post.caption}</p>
+                                <p style={{ fontSize: '12px', opacity: 0.6 }}>
+                                  {post.scheduled_date} {post.platform && `• ${post.platform}`}
+                                </p>
+                              </div>
+                              <div style={{ textAlign: 'right' }}>
+                                {post.status === 'approved' ? (
+                                  <span style={{ fontSize: '12px', fontWeight: 600, color: '#ecff90' }}>✓ Approved</span>
+                                ) : (
+                                  <span style={{ fontSize: '12px', fontWeight: 600, color: '#FF6B6B' }}>✗ Edit Requested</span>
+                                )}
+                              </div>
+                            </div>
+                            {post.edit_note && (
+                              <div style={{ marginTop: '12px', padding: '12px', backgroundColor: '#1a1a1a', borderLeft: '3px solid #FF6B6B', borderRadius: '4px' }}>
+                                <p style={{ fontSize: '12px', color: '#FFFFFF', fontStyle: 'italic' }}>"{post.edit_note}"</p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
