@@ -63,6 +63,7 @@ export async function loadContent(token: string): Promise<ContentBatch | null> {
       year: batchData.year,
       magic_link_token: batchData.magic_link_token,
       expires_at: batchData.expires_at,
+      status: batchData.status,
       posts,
     };
   } catch (error) {
